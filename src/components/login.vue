@@ -41,32 +41,32 @@
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
       </div>
       <textarea class="input1_col1" placeholder="请输入起诉书/起诉状..." v-model="qsz"> </textarea>
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 80%;">
-        <p style="color: #000000 ; font-size: 16px;">起诉状id:</p>
-        <el-input v-model="qszid" placeholder="请输入起诉状docId"  size="small"></el-input>
-        <el-button icon="el-icon-folder-add"  @click="click_iconqsz" size="mini" style="margin-left: 10px;"></el-button>
+      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
+        <!-- <p style="color: #000000 ; font-size: 16px;">起诉状id:</p> -->
+        <!-- <el-input v-model="qszid" placeholder="请输入起诉状docId"  size="small"></el-input> -->
+        <el-button icon="el-icon-folder-add"  @click="click_iconqsz" size="mini" style="width: 100%;"></el-button>
       </div>
       <textarea class="input1_col2" placeholder="请输入答辩状/辩护词..." v-model="dbz"> </textarea>
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 80%;">
-        <p  style="color: #000000 ; font-size: 16px;">答辩状id:</p>
-        <el-input v-model="dbzid" placeholder="请输入答辩状docId"  size="small"></el-input>
-        <el-button icon="el-icon-folder-add"  @click="click_icondbz" size="mini" style="margin-left: 10px;"></el-button>
+      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
+        <!-- <p  style="color: #000000 ; font-size: 16px;">答辩状id:</p>
+        <el-input v-model="dbzid" placeholder="请输入答辩状docId"  size="small"></el-input> -->
+        <el-button icon="el-icon-folder-add"  @click="click_icondbz" size="mini" style="width: 100%;"></el-button>
       </div>
       <textarea class="input1_col3" placeholder="请输入庭审笔录..." v-model="tsbl"> </textarea>
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 80%;">
-        <p  style="color: #000000 ; font-size: 16px;">庭审笔录id:</p>
-        <el-input v-model="tsblid" placeholder="请输入庭审笔录docId"  size="small"></el-input>
-        <el-button icon="el-icon-folder-add"  @click="click_icontsbl" size="mini" style="margin-left: 10px;"></el-button>
+      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
+        <!-- <p  style="color: #000000 ; font-size: 16px;">庭审笔录id:</p> -->
+        <!-- <el-input v-model="tsblid" placeholder="请输入庭审笔录docId"  size="small"></el-input> -->
+        <el-button icon="el-icon-folder-add"  @click="click_icontsbl" size="mini" style="width: 100%;"></el-button>
       </div>
       <textarea class="input1_col4" placeholder="请输入审理报告..." v-model="slbg"> </textarea>
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 80%;">
-        <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p>
-        <el-input v-model="slbgid" placeholder="请输入审理报告docId"  size="mini"></el-input>
-        <el-button icon="el-icon-folder-add"  @click="click_iconslbg" size="mini" style="margin-left: 10px;"></el-button>
+      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
+        <!-- <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p> -->
+        <!-- <el-input v-model="slbgid" placeholder="请输入审理报告docId"  size="mini"></el-input> -->
+        <el-button icon="el-icon-folder-add"  @click="click_iconslbg" size="mini" style="width: 100%;"></el-button>
       </div>
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 80%;">
-      <el-button type="primary" @click="click_groundtruth" style="width: 70%;">上传ground truth<i class="el-icon-upload el-icon--right"></i></el-button>
-      <el-button type="primary" @click="click_test" style="width: 25%;">Test</el-button>
+      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
+      <el-button type="primary" @click="click_groundtruth" style="width: 100%;">上传ground truth<i class="el-icon-upload el-icon--right"></i></el-button>
+      <!-- <el-button type="primary" @click="click_test" style="width: 25%;">Test</el-button> -->
     </div>
     </div>
     <div class="col2">
@@ -401,10 +401,10 @@ export default {
       fullscreenLoading2: false,
       fullscreenLoading3: false,
       caseid:"",
-      qszid:"",
-      dbzid:"",
-      tsblid:"",
-      slbgid:"",
+      qszid:"doc1",
+      dbzid:"doc2",
+      tsblid:"doc3",
+      slbgid:"doc4",
       shuchu1:"",
       shuchu2:"",
       events:[],

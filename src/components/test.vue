@@ -106,7 +106,7 @@
         </div>
         <div class="col7_1_1">
           <div class="col7_1_1_1">
-            <p>冲突检测结果</p>
+            <p>事实重构结果</p>
           </div>
           <div class="col7_1_1_2">
             <div class="col7_1_1_2_1">
@@ -693,7 +693,7 @@ export default {
 
       option = {
       title: {
-        text: '分案由比例数据',
+        text: '测试样本分案由比例',
         
         left: 'center'
       },
@@ -735,7 +735,7 @@ export default {
 
       option = {
         title: {
-          text: '测试数据案件类型分布情况',
+          text: '测试样本输入来源比例',
           left: 'center'
         },
         tooltip: {
