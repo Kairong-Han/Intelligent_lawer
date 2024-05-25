@@ -1,0 +1,79 @@
+[{
+    title: '事件一 id:1',
+    name: '1',
+    content:[
+      {
+        uniqEventId:"1",
+        source:"起诉书",
+        info:[
+          {
+            type:"事件",
+            content:"盗窃"
+          },{
+            type:"价值",
+            content:"1w"
+          },{
+            type:"称述主体",
+            content:"原告"
+          }
+        ]
+
+      },{
+        uniqEventId:"2",
+        source:"答辩状",
+        info:[
+          {
+            type:"事件",
+            content:"盗窃"
+          },{
+            type:"价值",
+            content:"5k"
+          },{
+            type:"称述主体",
+            content:"被告"
+          }
+        ]
+      }
+    ]
+  },{
+    title: '事件二 id:2',
+    name: '2',
+    content:[
+      {
+        uniqEventId:"1",
+        source:"庭审笔录",
+        info:[
+          {
+            type:"事件",
+            content:"诈骗"
+          },
+          {
+            type:"金额",
+            content:"10000"
+          },{
+            type:"是否自首",
+            content:"是"
+          },{
+            type:"称述主体",
+            content:"原告"
+          }
+        ]
+      },{
+        uniqEventId:"2",
+        source:"审理报告",
+        info:[
+          {
+            type:"行为主体",
+            content:"王五"
+          },{
+            type:"行为客体",
+            content:"赵六"
+          },{
+            type:"称述主体",
+            content:"被告"
+          }
+        ]
+
+      }
+    ]
+  }]
