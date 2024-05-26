@@ -526,7 +526,7 @@ export default {
       }
     },
     next_page(page){
-      this.$router.push('/login');
+      window.open('#/login', '_blank');
     },
     handleClick1(form){
       // alert("抽取事件发送请求")

@@ -1120,7 +1120,7 @@ export default {
       
     },
     next_page(form){
-      this.$router.push('/test');
+      window.open('#/test', '_blank');
     },
     handleClick2(form){
       this.fullscreenLoading2 = true;
