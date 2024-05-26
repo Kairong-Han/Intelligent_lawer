@@ -296,12 +296,12 @@
         </el-collapse-item>
       </el-collapse>
       </div>
-      <!-- <div style="width:auto;padding-left:10px;padding-right:10px;display: flex;flex-direction: column;"> 
+      <div style="width:auto;padding-left:10px;padding-right:10px;display: flex;flex-direction: column;"> 
         <p>指标</p>
         <p>F1 : {{sjwj_f1}}</p>
         <p>precision : {{sjwj_precision}}</p>
         <p>Recall : {{sjwj_recall}}</p>
-      </div> -->
+      </div>
       </div>
     </el-dialog>
 
