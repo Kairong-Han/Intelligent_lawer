@@ -6,7 +6,7 @@
           <el-button class="xuanfu" type="primary" @click="next_page"><i class="el-icon-arrow-left el-icon--left"></i>上一页</el-button>
         </el-row>
     <div class="top">
-      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统--事件挖掘和冲突检测能力测试页</span>
+      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统——事件挖掘和冲突检测能力测试页</span>
     </div>
     <div class="bottom">
     <div class="col1">
