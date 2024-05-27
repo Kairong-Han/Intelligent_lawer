@@ -35,6 +35,13 @@
       </div>
 
       <div style="width:90%; display:contents" v-show="activeFormat == 'folder'">
+        <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
+          <div style="width:30%"><p style="color: #000000 ; font-size: 16px;">测试区间:</p></div>
+          <div style="width:60%"><el-slider v-model="sample_range" range show-stops :max="sample_range_limit[1]" :min="sample_range_limit[0]"></el-slider></div>
+
+          <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
+        </div>
+
         <uploader style="width:100%" ref="uploader">
           <uploader-unsupport></uploader-unsupport>
           <div id="uploader-btn" style="display:none">
@@ -138,7 +145,7 @@
                 <el-table-column
                   prop="casecause"
                   label="案由"
-                  width="200">
+                  width="190">
                 </el-table-column>
                 <el-table-column
                   prop="f1"
@@ -148,7 +155,7 @@
                 <el-table-column
                   prop="precision"
                   label="Precision"
-                  width="75">
+                  width="90">
                 </el-table-column>
                 <el-table-column
                   prop="recall"
@@ -208,7 +215,7 @@
                 <el-table-column
                   prop="casecause"
                   label="案由"
-                  width="200">
+                  width="190">
                 </el-table-column>
                 <el-table-column
                   prop="f1"
@@ -218,7 +225,7 @@
                 <el-table-column
                   prop="precision"
                   label="Precision"
-                  width="75">
+                  width="90">
                 </el-table-column>
                 <el-table-column
                   prop="recall"
@@ -297,7 +304,9 @@ export default {
   data() {
     return {
       activeFormat: "folder",
-      activeMetric: "cause",
+      activeMetric: "sample",
+      sample_range: [0, 0],
+      sample_range_limit: [0, 0],
       tableData_sjwj:[],
       tableData_ctjc:[],
       tableData_sjwj_sample:[],
@@ -382,7 +391,50 @@ export default {
     };
   },
   mounted() {
+    this.$nextTick(() => {
+      const uploader = this.$refs.uploader.uploader
+      var that = this
 
+      uploader.on('fileComplete', function (rootFile) {
+        var filelist = uploader.fileList
+        var ids = new Set();
+
+        function replaceLast(str, search) {
+          var index = str.lastIndexOf(search);
+          if (index === -1) {
+            return str;
+          }
+          return str.substring(0, index) + str.substring(index + search.length);
+        }
+
+        function searchFolder(folder) {
+          for (let file in folder.fileList) {
+            if (folder.fileList[file].isFolder) {
+              searchFolder(folder.fileList[file])
+            } else {
+              var name = folder.fileList[file].file.name;
+              var path = folder.fileList[file].file.webkitRelativePath;
+              
+              path = replaceLast(path, name);
+
+              var match = [...path.matchAll(/(\d+)\//g)];
+              if (match.length > 0) {
+                var id = match[match.length - 1][1]
+                ids.add(id);
+              }
+            }
+          }
+        }
+
+        for (let folder in filelist) {
+          searchFolder(filelist[folder])
+        }
+
+        that.ids = [...ids];
+        that.sample_range_limit = [Math.min.apply(Math, that.ids), Math.max.apply(Math, that.ids)];
+        that.sample_range = that.sample_range_limit
+      })
+    })
   },
   methods: {
     uploadFolder(){
@@ -390,49 +442,25 @@ export default {
     },
     tjcs_folder(){
       const uploader = this.$refs.uploader.uploader
-      var filelist = uploader.fileList
-      var ids = new Set();
-
-      function replaceLast(str, search) {
-        var index = str.lastIndexOf(search);
-        if (index === -1) {
-          return str;
-        }
-        return str.substring(0, index) + str.substring(index + search.length);
-      }
-
-      function searchFolder(folder) {
-        for (let file in folder.fileList) {
-          if (folder.fileList[file].isFolder) {
-            searchFolder(folder.fileList[file])
-          } else {
-            var name = folder.fileList[file].file.name;
-            var path = folder.fileList[file].file.webkitRelativePath;
-            
-            path = replaceLast(path, name);
-
-            var match = [...path.matchAll(/(\d+)\//g)];
-            if (match.length > 0) {
-              var id = match[match.length - 1][1]
-              ids.add(id);
-            }
-          }
-        }
-      }
-
-      for (let folder in filelist) {
-        searchFolder(filelist[folder])
-      }
-
-      ids = [...ids];
 
       this.percentage = 0
-      if (ids.length == 0){
+      if (this.ids.length == 0){
         alert("请上传测试数据");
         return;
-      } else {
-        this.percentage = 10
       }
+
+      var ids = []
+      for (let i in this.ids) {
+        if (this.ids[i] >= this.sample_range[0] && this.ids[i] <= this.sample_range[1]) {
+          ids.push(this.ids[i]);
+        }
+      }
+
+      if (ids.length == 0) {
+        alert("区间内无样本");
+        return;
+      }
+      this.percentage = 10
       
       var interval = this.simulateProgress()
       this.$http.post("/metrics", {

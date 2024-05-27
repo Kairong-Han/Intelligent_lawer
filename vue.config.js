@@ -31,11 +31,6 @@ module.exports = defineConfig({
         secure: false, 
         changeOrigin: true,    // 允许跨域
       },
-      '/metrics/folders':{
-        target: 'http://localhost:12345',
-        secure: false, 
-        changeOrigin: true,    // 允许跨域
-      },
       '/metrics':{
         target: 'http://localhost:12345',
         secure: false, 
