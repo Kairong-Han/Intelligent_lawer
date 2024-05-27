@@ -13,25 +13,9 @@
       <div class="col_head"><p  style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_random">随机数据</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_assign">指定数据</el-button>
+        <el-button type="primary" round @click="click_random">JSONL 格式</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_assign">文件夹格式</el-button>
       </div>
 
-      <div style="width:90%; display:contents" v-show="activeTab == 'assign'">
-        <uploader style="width:100%" ref="uploader">
-          <uploader-unsupport></uploader-unsupport>
-          <div id="uploader-btn" style="display:none">
-            <uploader-btn :directory="true" ref="inputer"></uploader-btn>
-          </div>
-          <el-button type="primary" style="width: 90%; margin-top: 2rem" @click="uploadFolder()">上传文件夹<i class="el-icon-upload el-icon--right"></i></el-button>
-          <div style="width: 90%; padding-left: 5%; padding-right:5%; margin-top: 0.5rem">
-            <uploader-list></uploader-list>
-          </div>
-        </uploader>
-
-        <el-button type="primary" @click="tjcs_folder" style="width: 90%; margin-top: 1rem">提交测试</el-button>
-      </div>
-
-      <div style="width:100%; display:contents" v-show="activeTab == 'random'">
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
         <div style="width:30%"><p  style="color: #000000 ; font-size: 16px;">采样个数:</p></div>
         <el-input-number v-model="cygs" placeholder="请输入case id"  size="small" controls-position="right"></el-input-number>
@@ -49,7 +33,23 @@
 
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
       </div>
-      
+
+      <div style="width:90%; display:contents" v-show="activeTab == 'assign'">
+        <uploader style="width:100%" ref="uploader">
+          <uploader-unsupport></uploader-unsupport>
+          <div id="uploader-btn" style="display:none">
+            <uploader-btn :directory="true" ref="inputer"></uploader-btn>
+          </div>
+          <el-button type="primary" style="width: 90%; margin-top: 5px" @click="uploadFolder()">上传文件夹<i class="el-icon-upload el-icon--right"></i></el-button>
+          <div style="width: 90%; padding-left: 5%; padding-right:5%; margin-top: 0.5rem">
+            <uploader-list></uploader-list>
+          </div>
+        </uploader>
+
+        <el-button type="primary" @click="tjcs_folder" style="width: 90%; margin-top: 0.5rem">提交测试</el-button>
+      </div>
+
+      <div style="width:100%; display:contents" v-show="activeTab == 'random'">
       <!-- <textarea class="input1_col4" placeholder="请输入JSONL格式数据..." v-model="slbg" :disabled="true"> </textarea> -->
       <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
         <!-- <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p> -->
@@ -63,13 +63,13 @@
 
       </div>
       <el-button type="primary" @click="tjcs" style="width: 90%;margin-top:10px">提交测试</el-button>
+      </div>
 
       <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
         <div style="width:30%"><p  style="color: #000000 ; font-size: 16px;">选择轮次:</p></div>
         <el-input-number v-model="xzlc" placeholder="请输入case id"  size="small" controls-position="right"></el-input-number>
         <el-button type="primary" @click="Search" style="width: 20%;margin-left: 10px;" size="small">查询</el-button>
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
-      </div>
       </div>
     </div>
    
@@ -367,8 +367,11 @@ export default {
       }
       
       var interval = this.simulateProgress()
-      this.$http.post("/metrics/folders", {
-        "folders": ids
+      this.$http.post("/metrics", {
+        "seed":this.sjszz,
+        "n":this.csls,
+        "number":this.cygs,
+        "ids": ids
       }).then((res)=>{
         if (res.data.resCode != 200){
           alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
@@ -378,8 +381,6 @@ export default {
           this.tjjg = res.data.resData;
           clearInterval(interval);
           this.percentage = 100;
-          this.xzlc = 0;
-          this.Search();
         }
         
       }).catch((res)=>{
