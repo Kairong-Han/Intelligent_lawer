@@ -6,13 +6,33 @@
           <el-button class="xuanfu" type="primary" @click="next_page"><i class="el-icon-arrow-left el-icon--left"></i>上一页</el-button>
         </el-row>
     <div class="top">
-      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统--事件挖掘和冲突检测能力测试页</span>
+      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统——事件挖掘和冲突检测能力测试页</span>
     </div>
     <div class="bottom">
     <div class="col1">
       <div class="col_head"><p  style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
-      <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
+      <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
+        <el-button type="primary" round @click="click_random">随机数据</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_assign">指定数据</el-button>
+      </div>
+
+      <div style="width:90%; display:contents" v-show="activeTab == 'assign'">
+        <uploader style="width:100%" ref="uploader">
+          <uploader-unsupport></uploader-unsupport>
+          <div id="uploader-btn" style="display:none">
+            <uploader-btn :directory="true" ref="inputer"></uploader-btn>
+          </div>
+          <el-button type="primary" style="width: 90%; margin-top: 2rem" @click="uploadFolder()">上传文件夹<i class="el-icon-upload el-icon--right"></i></el-button>
+          <div style="width: 90%; padding-left: 5%; padding-right:5%; margin-top: 0.5rem">
+            <uploader-list></uploader-list>
+          </div>
+        </uploader>
+
+        <el-button type="primary" @click="tjcs_folder" style="width: 90%; margin-top: 1rem">提交测试</el-button>
+      </div>
+
+      <div style="width:100%; display:contents" v-show="activeTab == 'random'">
+        <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
         <div style="width:30%"><p  style="color: #000000 ; font-size: 16px;">采样个数:</p></div>
         <el-input-number v-model="cygs" placeholder="请输入case id"  size="small" controls-position="right"></el-input-number>
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
@@ -49,6 +69,7 @@
         <el-input-number v-model="xzlc" placeholder="请输入case id"  size="small" controls-position="right"></el-input-number>
         <el-button type="primary" @click="Search" style="width: 20%;margin-left: 10px;" size="small">查询</el-button>
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
+      </div>
       </div>
     </div>
    
@@ -210,6 +231,7 @@ export default {
   ]),
   data() {
     return {
+      activeTab: "random",
       tableData_sjwj:[],
       tableData_ctjc:[],
       sjwj_F1:"",
@@ -292,9 +314,82 @@ export default {
     };
   },
   mounted() {
-    
+
   },
   methods: {
+    uploadFolder(){
+      document.querySelector("#uploader-btn > label > input").click();
+    },
+    tjcs_folder(){
+      const uploader = this.$refs.uploader.uploader
+      var filelist = uploader.fileList
+      var ids = new Set();
+
+      function replaceLast(str, search) {
+        var index = str.lastIndexOf(search);
+        if (index === -1) {
+          return str;
+        }
+        return str.substring(0, index) + str.substring(index + search.length);
+      }
+
+      function searchFolder(folder) {
+        for (let file in folder.fileList) {
+          if (folder.fileList[file].isFolder) {
+            searchFolder(folder.fileList[file])
+          } else {
+            var name = folder.fileList[file].file.name;
+            var path = folder.fileList[file].file.webkitRelativePath;
+            
+            path = replaceLast(path, name);
+
+            var match = [...path.matchAll(/(\d+)\//g)];
+            if (match.length > 0) {
+              var id = match[match.length - 1][1]
+              ids.add(id);
+            }
+          }
+        }
+      }
+
+      for (let folder in filelist) {
+        searchFolder(filelist[folder])
+      }
+
+      ids = [...ids];
+
+      this.percentage = 0
+      if (ids.length == 0){
+        alert("请上传测试数据");
+        return;
+      } else {
+        this.percentage = 10
+      }
+      
+      var interval = this.simulateProgress()
+      this.$http.post("/metrics/folders", {
+        "folders": ids
+      }).then((res)=>{
+        if (res.data.resCode != 200){
+          alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
+          clearInterval(interval);
+          this.percentage = 0;
+        }else{
+          this.tjjg = res.data.resData;
+          clearInterval(interval);
+          this.percentage = 100;
+          this.xzlc = 0;
+          this.Search();
+        }
+        
+      }).catch((res)=>{
+        console.log(res)
+        alert("something error");
+        clearInterval(interval);
+        this.percentage = 0;
+      })
+
+    },
     click_iconqsz(){
       var fileInput = document.createElement('input');
       fileInput.type = 'file';
@@ -525,8 +620,14 @@ export default {
           return str;
       }
     },
+    click_random(){
+      this.activeTab="random"
+    },
+    click_assign(){
+      this.activeTab="assign"
+    },
     next_page(page){
-      this.$router.push('/login');
+      window.open('#/login', '_blank');
     },
     handleClick1(form){
       // alert("抽取事件发送请求")
