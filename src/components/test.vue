@@ -10,10 +10,10 @@
     </div>
     <div class="bottom">
     <div class="col1">
-      <div class="col_head"><p  style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
+      <div class="col_head"><p style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_random">JSONL 格式</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_assign">文件夹格式</el-button>
+        <el-button type="primary" round @click="click_jsonl">JSONL 格式</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">文件夹格式</el-button>
       </div>
 
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
@@ -34,7 +34,7 @@
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
       </div>
 
-      <div style="width:90%; display:contents" v-show="activeTab == 'assign'">
+      <div style="width:90%; display:contents" v-show="activeFormat == 'folder'">
         <uploader style="width:100%" ref="uploader">
           <uploader-unsupport></uploader-unsupport>
           <div id="uploader-btn" style="display:none">
@@ -49,7 +49,7 @@
         <el-button type="primary" @click="tjcs_folder" style="width: 90%; margin-top: 0.5rem">提交测试</el-button>
       </div>
 
-      <div style="width:100%; display:contents" v-show="activeTab == 'random'">
+      <div style="width:100%; display:contents" v-show="activeFormat == 'jsonl'">
       <!-- <textarea class="input1_col4" placeholder="请输入JSONL格式数据..." v-model="slbg" :disabled="true"> </textarea> -->
       <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
         <!-- <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p> -->
@@ -82,8 +82,11 @@
 
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
       </div>
-  
-      
+
+      <div class="row" style="margin-top: 1rem; margin-bottom: 0.5rem">
+        <el-button type="primary" round @click="click_cause">分案由统计</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_sample">分样本统计</el-button>
+      </div>
+
       <div class="col7_1">
 
         <div class="col7_1_1">
@@ -97,7 +100,7 @@
               <p style="margin-top:10px">Precision : {{ sjwj_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ sjwj_recall }}</p>
             </div>
-            <div class="col7_1_1_2_2">
+            <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
               <el-table
                 :data="tableData_sjwj"
                 style="width: 100%">
@@ -123,6 +126,37 @@
                 </el-table-column>
               </el-table>
             </div>
+            <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
+              <el-table
+                :data="tableData_sjwj_sample"
+                style="width: 100%">
+                <el-table-column
+                  prop="id"
+                  label="编号"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="casecause"
+                  label="案由"
+                  width="200">
+                </el-table-column>
+                <el-table-column
+                  prop="f1"
+                  label="F1"
+                  width="75">
+                </el-table-column>
+                <el-table-column
+                  prop="precision"
+                  label="Precision"
+                  width="75">
+                </el-table-column>
+                <el-table-column
+                  prop="recall"
+                  label="Recall"
+                  >
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
         </div>
         <div class="col7_1_1">
@@ -136,7 +170,7 @@
               <p style="margin-top:10px">Precision : {{ ctjc_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ ctjc_recall }}</p>
             </div>
-            <div class="col7_1_1_2_2">
+            <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
               <el-table
                 :data="tableData_ctjc"
                 style="width: 100%">
@@ -154,6 +188,37 @@
                   prop="precision"
                   label="Precision"
                   width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="recall"
+                  label="Recall"
+                  >
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
+              <el-table
+                :data="tableData_ctjc_sample"
+                style="width: 100%">
+                <el-table-column
+                  prop="id"
+                  label="编号"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="casecause"
+                  label="案由"
+                  width="200">
+                </el-table-column>
+                <el-table-column
+                  prop="f1"
+                  label="F1"
+                  width="75">
+                </el-table-column>
+                <el-table-column
+                  prop="precision"
+                  label="Precision"
+                  width="75">
                 </el-table-column>
                 <el-table-column
                   prop="recall"
@@ -231,9 +296,12 @@ export default {
   ]),
   data() {
     return {
-      activeTab: "random",
+      activeFormat: "folder",
+      activeMetric: "cause",
       tableData_sjwj:[],
       tableData_ctjc:[],
+      tableData_sjwj_sample:[],
+      tableData_ctjc_sample:[],
       sjwj_F1:"",
       sjwj_Precision:"",
       sjwj_recall:"",
@@ -621,11 +689,17 @@ export default {
           return str;
       }
     },
-    click_random(){
-      this.activeTab="random"
+    click_jsonl(){
+      this.activeFormat="jsonl"
     },
-    click_assign(){
-      this.activeTab="assign"
+    click_folder(){
+      this.activeFormat="folder"
+    },
+    click_cause(){
+      this.activeMetric="cause"
+    },
+    click_sample(){
+      this.activeMetric="sample"
     },
     next_page(page){
       window.open('#/login', '_blank');
@@ -881,8 +955,10 @@ export default {
         this.ctjc_F1 = one_item['refactor']['overall']['f1']
         this.ctjc_Precision = one_item['refactor']['overall']['precision']
         this.ctjc_recall = one_item['refactor']['overall']['recall']
-        this.tableData_sjwj = one_item['event']['details']
-        this.tableData_ctjc = one_item['refactor']['details']
+        this.tableData_sjwj = one_item['event']['causes']
+        this.tableData_ctjc = one_item['refactor']['causes']
+        this.tableData_sjwj_sample = one_item['event']['details']
+        this.tableData_ctjc_sample = one_item['refactor']['details']
         var list1 = []
         
         for (var key in one_item["counter_casecause"]){
