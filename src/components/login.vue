@@ -66,7 +66,7 @@
       </div>
       <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
       <el-button type="primary" @click="click_groundtruth" style="width: 100%;">上传ground truth<i class="el-icon-upload el-icon--right"></i></el-button>
-      <!-- <el-button type="primary" @click="click_test" style="width: 25%;">Test</el-button> -->
+      <!-- <el-button type="primary" @click="click_test" style="width: 100%;">Test</el-button> -->
     </div>
     </div>
     <div class="col2">
@@ -297,10 +297,10 @@
       </el-collapse>
       </div>
       <div style="width:auto;padding-left:10px;padding-right:10px;display: flex;flex-direction: column;"> 
-        <p>指标</p>
+        <!-- <p>指标</p>
         <p>F1 : {{sjwj_f1}}</p>
         <p>precision : {{sjwj_precision}}</p>
-        <p>Recall : {{sjwj_recall}}</p>
+        <p>Recall : {{sjwj_recall}}</p> -->
       </div>
       </div>
     </el-dialog>
