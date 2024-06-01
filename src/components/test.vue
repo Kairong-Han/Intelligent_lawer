@@ -6,14 +6,14 @@
           <el-button class="xuanfu" type="primary" @click="next_page"><i class="el-icon-arrow-left el-icon--left"></i>上一页</el-button>
         </el-row>
     <div class="top">
-      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统——事件挖掘和冲突检测能力测试页</span>
+      <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统——事件挖掘和事实重构能力测试页</span>
     </div>
     <div class="bottom">
     <div class="col1">
       <div class="col_head"><p style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_jsonl">JSONL 格式</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">文件夹格式</el-button>
+        <el-button type="primary" round @click="click_jsonl">全量测试版</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">文件夹格式</el-button>
       </div>
 
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
@@ -97,6 +97,7 @@
       <div class="col7_1">
 
         <div class="col7_1_1">
+
           <div class="col7_1_1_1">
             <p>事件挖掘结果</p>
           </div>
@@ -164,7 +165,12 @@
                 </el-table-column>
               </el-table>
             </div>
+
           </div>
+        
+        </div>
+        <div class="col7_1_1">
+        <div id="tb1" style="width: 95%;height: 400px;" > </div>
         </div>
         <div class="col7_1_1">
           <div class="col7_1_1_1">
@@ -236,9 +242,11 @@
             </div>
           </div>
         </div>
-
-        <div id="ec1" style="width: 95%;height: 400px;" > </div>
-        <div id="ec2" style="width: 95%;height: 400px;" > </div>
+        <div class="col7_1_1">
+        <div id="tb2" style="width: 95%;height: 400px;" > </div>
+        </div>
+        <div id="ec1" style="width: 100%;height: 400px;" > </div>
+        <div id="ec2" style="width: 100%;height: 400px;" > </div>
        
       </div>
       <!-- <div class="col7_2" style="color: #010101 ; font-size: 14px;">
@@ -890,7 +898,7 @@ export default {
       
       alert("事件融合成功")
     },
-    bingtu1(formdata){
+    bingtu1(formdata,sample){
       var chartDom = document.getElementById('ec1');
       var myChart = echarts.init(chartDom);
       var option;
@@ -931,8 +939,40 @@ export default {
       ]
 };
       option && myChart.setOption(option);
+      var chartDom = document.getElementById('tb1');
+      var myChart = echarts.init(chartDom);
+      var option;
+      var data_name = ['1','2','3','4','5','6','7','8','9','10']
+      var data_list = [];
+      if (sample.length >=10){
+        sample = sample.slice(0,10)
+        
+      }else{
+        data_name = data_name.slice(0,sample.length)
+      }
+      for(var i=0;i<sample.length;i++){
+        data_list.push(sample[i]['f1'])
+      }
+      option = {
+        xAxis: {
+          type: 'category',
+          data: data_name
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: data_list,
+            type: 'bar'
+          }
+        ]
+      };
+
+      option && myChart.setOption(option);
+
     },
-    bingtu2(formdata){
+    bingtu2(formdata,sample){
       var chartDom = document.getElementById('ec2');
       var myChart = echarts.init(chartDom);
       var option;
@@ -942,9 +982,10 @@ export default {
           text: '测试样本输入来源比例',
           left: 'center'
         },
-        tooltip: {
-          trigger: 'item'
-        },
+tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+      },
         legend: {
           orient: 'vertical',
           left: 'left'
@@ -966,6 +1007,37 @@ export default {
           }
         ]
       };
+      option && myChart.setOption(option);
+      var chartDom = document.getElementById('tb2');
+      var myChart = echarts.init(chartDom);
+      var option;
+      var data_name = ['1','2','3','4','5','6','7','8','9','10']
+      var data_list = [];
+      if (sample.length >=10){
+        sample = sample.slice(0,10)
+        
+      }else{
+        data_name = data_name.slice(0,sample.length)
+      }
+      for(var i=0;i<sample.length;i++){
+        data_list.push(sample[i]['f1'])
+      }
+      option = {
+        xAxis: {
+          type: 'category',
+          data: data_name
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: data_list,
+            type: 'bar'
+          }
+        ]
+      };
+
       option && myChart.setOption(option);
     },
     Search(){
@@ -997,8 +1069,9 @@ export default {
         for (var key in one_item["counter_source"]){
           list2.push({'name':key,'value':one_item["counter_source"][key]})
         }
-        this.bingtu1(list1)
-        this.bingtu2(list2)
+        this.bingtu1(list1,this.tableData_sjwj_sample)
+        
+        this.bingtu2(list2,this.tableData_ctjc_sample)
       }
 
     }
