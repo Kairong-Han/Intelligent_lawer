@@ -308,6 +308,7 @@ export default {
   ]),
   data() {
     return {
+      ids: [],
       activeFormat: "folder",
       activeMetric: "sample",
       sample_range: [0, 0],
@@ -325,9 +326,9 @@ export default {
       percentage :"",
       xzlc:"",
       tjjg:[],
-      cygs:100,
+      cygs:1000,
       sjszz:10,
-      csls:10,
+      csls:5,
       temp : [],
       dialogVisible:false,
       fullscreenLoading: false,
