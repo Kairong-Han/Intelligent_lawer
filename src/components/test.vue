@@ -1,5 +1,13 @@
-<template>
+<style>
+  .uploader-file-status{
+    display: none;
+  }
 
+  .uploader-file-actions{
+    display: none;
+  }
+</style>
+<template>
   <div class="loginbody">
     <el-row>
           <!-- <el-button class="xuanfu">默认按钮</el-button> -->
@@ -13,7 +21,7 @@
       <div class="col_head"><p style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_jsonl">全量测试版</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">文件夹格式</el-button>
+        <el-button type="primary" round @click="click_jsonl">全量测试</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">抽样测试</el-button>
       </div>
 
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
@@ -42,7 +50,7 @@
           <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
         </div>
 
-        <uploader style="width:100%" ref="uploader">
+        <uploader style="width:100%" ref="uploader" :autoStart="false">
           <uploader-unsupport></uploader-unsupport>
           <div id="uploader-btn" style="display:none">
             <uploader-btn :directory="true" ref="inputer"></uploader-btn>
@@ -403,7 +411,7 @@ export default {
       const uploader = this.$refs.uploader.uploader
       var that = this
 
-      uploader.on('fileComplete', function (rootFile) {
+      uploader.on('filesAdded', function (rootFile) {
         var filelist = uploader.fileList
         var ids = new Set();
 
