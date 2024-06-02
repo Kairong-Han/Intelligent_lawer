@@ -66,17 +66,6 @@
 
       <div style="width:100%; display:contents" v-show="activeFormat == 'jsonl'">
       <!-- <textarea class="input1_col4" placeholder="请输入JSONL格式数据..." v-model="slbg" :disabled="true"> </textarea> -->
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
-        <!-- <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p> -->
-        <!-- <el-input v-model="slbgid" placeholder="请输入审理报告docId"  size="mini"></el-input> -->
-        <div style="display: flex;align-items: center;width: 100%;justify-content: center;">
-          <!-- <el-button tuype="primary"  @click="click_iconslbg"  style="margin-left: 10px;">选择文件</el-button> -->
-
-          <el-button type="primary" @click="click_iconslbg" style="width: 100%;">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-          
-        </div>
-
-      </div>
       <el-button type="primary" @click="tjcs" style="width: 90%;margin-top:10px">提交测试</el-button>
       </div>
 
@@ -568,32 +557,6 @@ export default {
           }
           document.body.removeChild(fileInput);
       });
-    },click_iconslbg(){
-      var fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.style.display = 'none';
-      fileInput.accept = '.json';
-      document.body.appendChild(fileInput);
-      fileInput.click();
-      var that = this;
-      fileInput.addEventListener('change', function() {
-          if (fileInput.files.length > 0) {
-              var file = fileInput.files[0];
-              var reader = new FileReader();
-              reader.onload = function(e) {
-                  var fileContent = e.target.result;
-                  if (fileContent.length > 5000){
-                    that.slbg = fileContent.slice(0, 4000);
-                  }else{
-                    that.slbg = fileContent;
-                  }
-                  
-              };
-              reader.readAsText(file);
-              
-          }
-          document.body.removeChild(fileInput);
-      });
     },
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -625,12 +588,7 @@ export default {
         "number":this.cygs
       }
       
-      if (this.slbg == ""){
-        alert("请输入测试数据");
-        return;
-      }else{
-        this.percentage = 10
-      }
+      this.percentage = 10
       
       var interval = this.simulateProgress()
       this.$http.post("/metrics",data).then((res)=>{
