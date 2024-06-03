@@ -134,6 +134,7 @@
             <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
               <el-table
                 :data="tableData_sjwj_sample"
+                @row-click="open_sjwj_detail"
                 style="width: 100%">
                 <el-table-column
                   prop="id"
@@ -209,6 +210,7 @@
             <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
               <el-table
                 :data="tableData_ctjc_sample"
+                @row-click="open_ctjc_detail"
                 style="width: 100%">
                 <el-table-column
                   prop="id"
@@ -288,7 +290,81 @@
         <el-button @click="Close_dia">确 定</el-button>
       </span>
     </el-dialog>
-  </div>
+    <el-dialog
+      title="事件挖掘预期结果"
+      :visible.sync="dialogVisible_yuqi1"
+      width="70%"
+      :before-close="handleClose_yuqi1">
+      <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
+        <p>模型输出结果</p>
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames">
+            <el-collapse-item v-for="(item, index) in sample.doc" :key="index" :title="item.source" :name="item.source">
+            <div v-for="(item2, index2) in item.predict" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+            </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+        <p>模型预期结果</p>
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames2">
+            <el-collapse-item v-for="(item, index) in sample.doc" :key="index" :title="item.source" :name="item.source">
+            <div v-for="(item2, index2) in item.label" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>            
+            </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="事实重构预期结果"
+      :visible.sync="dialogVisible_yuqi2"
+      width="70%"
+      :before-close="handleClose_yuqi2">
+      <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames3">
+          <el-collapse-item title="模型输出结果" name="模型输出结果">
+          <div v-for="(item2, index2) in sample.factElement" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+          </div>
+          </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames4">
+          <el-collapse-item title="模型预期结果" name="模型预期结果">
+          <div v-for="(item2, index2) in sample.pred_factElement" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+          </div>
+          </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      </div>
+    </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -313,6 +389,9 @@ export default {
       activeMetric: "sample",
       sample_range: [0, 0],
       sample_range_limit: [0, 0],
+      sample: {},
+      dialogVisible_yuqi1 :false,
+      dialogVisible_yuqi2 :false,
       tableData_sjwj:[],
       tableData_ctjc:[],
       tableData_sjwj_sample:[],
@@ -443,6 +522,36 @@ export default {
     })
   },
   methods: {
+    open_sjwj_detail(row) {
+      this.$http.post("/sample", {
+        "id": row.id,
+      }).then((res)=>{
+        if (res.data.resCode != 200){
+          alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
+        }else{
+          this.sample = res.data.resData;
+          this.dialogVisible_yuqi1 = true;
+        }
+      }).catch((res)=>{
+        console.log(res)
+        alert("something error");
+      })
+    },
+    open_ctjc_detail(row) {
+      this.$http.post("/sample", {
+        "id": row.id,
+      }).then((res)=>{
+        if (res.data.resCode != 200){
+          alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
+        }else{
+          this.sample = res.data.resData;
+          this.dialogVisible_yuqi2 = true;
+        }
+      }).catch((res)=>{
+        console.log(res)
+        alert("something error");
+      })
+    },
     uploadFolder(){
       document.querySelector("#uploader-btn > label > input").click();
     },
