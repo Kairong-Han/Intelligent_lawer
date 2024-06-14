@@ -35,6 +35,11 @@ module.exports = defineConfig({
         target: 'http://localhost:12345',
         secure: false, 
         changeOrigin: true,    // 允许跨域
+      },
+      '/sample':{
+        target: 'http://localhost:12345',
+        secure: false, 
+        changeOrigin: true,    // 允许跨域
       }
     },
   },

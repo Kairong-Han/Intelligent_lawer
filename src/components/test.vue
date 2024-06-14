@@ -1,5 +1,13 @@
-<template>
+<style>
+  .uploader-file-status{
+    display: none;
+  }
 
+  .uploader-file-actions{
+    display: none;
+  }
+</style>
+<template>
   <div class="loginbody">
     <el-row>
           <!-- <el-button class="xuanfu">默认按钮</el-button> -->
@@ -7,13 +15,14 @@
         </el-row>
     <div class="top">
       <span style="color: #000000 ; font-size: 24px;">智能裁判辅助办案系统——事件挖掘和事实重构能力测试页</span>
+      <p style="margin-top:1.5rem">针对全案由案情复杂、多源卷宗存在冲突的问题，本项目创新提出面向多源卷宗材料的事件挖掘与事实甄别双向驱动的全过程事实重构方法，通过大小模型协同、通用信息抽取、提示学习、对比学习和法律知识驱动等技术，缓解全案由案情复杂带来的泛化困难问题和由法律领域特殊性导致的要素抽取挑战，突破解决面向多源法律卷宗材料中的事件挖掘、要素冲突检测与融合，实现法律事件挖掘模型、法律事实重构模型和法律事实重构服务。</p>
     </div>
     <div class="bottom">
     <div class="col1">
       <div class="col_head"><p style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_jsonl">全量测试版</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">文件夹格式</el-button>
+        <el-button type="primary" round @click="click_jsonl">全量测试</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">抽样测试</el-button>
       </div>
 
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
@@ -42,7 +51,7 @@
           <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
         </div>
 
-        <uploader style="width:100%" ref="uploader">
+        <uploader style="width:100%" ref="uploader" :autoStart="false">
           <uploader-unsupport></uploader-unsupport>
           <div id="uploader-btn" style="display:none">
             <uploader-btn :directory="true" ref="inputer"></uploader-btn>
@@ -58,17 +67,6 @@
 
       <div style="width:100%; display:contents" v-show="activeFormat == 'jsonl'">
       <!-- <textarea class="input1_col4" placeholder="请输入JSONL格式数据..." v-model="slbg" :disabled="true"> </textarea> -->
-      <div style="display:flex;flex-direction: row;justify-content: left;align-items: center;margin-top: 5px;width: 90%;">
-        <!-- <p  style="color: #000000 ; font-size: 16px;">审理报告id:</p> -->
-        <!-- <el-input v-model="slbgid" placeholder="请输入审理报告docId"  size="mini"></el-input> -->
-        <div style="display: flex;align-items: center;width: 100%;justify-content: center;">
-          <!-- <el-button tuype="primary"  @click="click_iconslbg"  style="margin-left: 10px;">选择文件</el-button> -->
-
-          <el-button type="primary" @click="click_iconslbg" style="width: 100%;">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-          
-        </div>
-
-      </div>
       <el-button type="primary" @click="tjcs" style="width: 90%;margin-top:10px">提交测试</el-button>
       </div>
 
@@ -137,6 +135,7 @@
             <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
               <el-table
                 :data="tableData_sjwj_sample"
+                @row-click="open_sjwj_detail"
                 style="width: 100%">
                 <el-table-column
                   prop="id"
@@ -212,6 +211,7 @@
             <div class="col7_1_1_2_2" v-show="activeMetric == 'sample'">
               <el-table
                 :data="tableData_ctjc_sample"
+                @row-click="open_ctjc_detail"
                 style="width: 100%">
                 <el-table-column
                   prop="id"
@@ -291,7 +291,81 @@
         <el-button @click="Close_dia">确 定</el-button>
       </span>
     </el-dialog>
-  </div>
+    <el-dialog
+      title="事件挖掘预期结果"
+      :visible.sync="dialogVisible_yuqi1"
+      width="70%"
+      :before-close="handleClose_yuqi1">
+      <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
+        <p>模型输出结果</p>
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames">
+            <el-collapse-item v-for="(item, index) in sample.doc" :key="index" :title="item.source" :name="item.source">
+            <div v-for="(item2, index2) in item.predict" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+            </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+        <p>模型预期结果</p>
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames2">
+            <el-collapse-item v-for="(item, index) in sample.doc" :key="index" :title="item.source" :name="item.source">
+            <div v-for="(item2, index2) in item.label" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>            
+            </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="事实重构预期结果"
+      :visible.sync="dialogVisible_yuqi2"
+      width="70%"
+      :before-close="handleClose_yuqi2">
+      <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames3">
+          <el-collapse-item title="模型输出结果" name="模型输出结果">
+          <div v-for="(item2, index2) in sample.factElement" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+          </div>
+          </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+        <div style="height:100%;overflow: auto;">
+          <el-collapse v-model="activeNames4">
+          <el-collapse-item title="模型预期结果" name="模型预期结果">
+          <div v-for="(item2, index2) in sample.pred_factElement" :key="index2" class="event_item2">
+              <p v-for="key in Object.keys(item2)" :key="key" style="color: #010101 ; font-size: 14px;">
+                {{ key }} : {{ item2[key] }}
+              </p>
+          </div>
+          </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+      
+      </div>
+    </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -311,10 +385,14 @@ export default {
   ]),
   data() {
     return {
+      ids: [],
       activeFormat: "folder",
       activeMetric: "sample",
       sample_range: [0, 0],
       sample_range_limit: [0, 0],
+      sample: {},
+      dialogVisible_yuqi1 :false,
+      dialogVisible_yuqi2 :false,
       tableData_sjwj:[],
       tableData_ctjc:[],
       tableData_sjwj_sample:[],
@@ -328,9 +406,9 @@ export default {
       percentage :"",
       xzlc:"",
       tjjg:[],
-      cygs:100,
+      cygs:1000,
       sjszz:10,
-      csls:10,
+      csls:5,
       temp : [],
       dialogVisible:false,
       fullscreenLoading: false,
@@ -403,7 +481,7 @@ export default {
       const uploader = this.$refs.uploader.uploader
       var that = this
 
-      uploader.on('fileComplete', function (rootFile) {
+      uploader.on('filesAdded', function (rootFile) {
         var filelist = uploader.fileList
         var ids = new Set();
 
@@ -445,6 +523,36 @@ export default {
     })
   },
   methods: {
+    open_sjwj_detail(row) {
+      this.$http.post("/sample", {
+        "id": row.id,
+      }).then((res)=>{
+        if (res.data.resCode != 200){
+          alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
+        }else{
+          this.sample = res.data.resData;
+          this.dialogVisible_yuqi1 = true;
+        }
+      }).catch((res)=>{
+        console.log(res)
+        alert("something error");
+      })
+    },
+    open_ctjc_detail(row) {
+      this.$http.post("/sample", {
+        "id": row.id,
+      }).then((res)=>{
+        if (res.data.resCode != 200){
+          alert("错误代码："+res.data.resCode+",错误信息："+res.data.resData)
+        }else{
+          this.sample = res.data.resData;
+          this.dialogVisible_yuqi2 = true;
+        }
+      }).catch((res)=>{
+        console.log(res)
+        alert("something error");
+      })
+    },
     uploadFolder(){
       document.querySelector("#uploader-btn > label > input").click();
     },
@@ -560,32 +668,6 @@ export default {
           }
           document.body.removeChild(fileInput);
       });
-    },click_iconslbg(){
-      var fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.style.display = 'none';
-      fileInput.accept = '.json';
-      document.body.appendChild(fileInput);
-      fileInput.click();
-      var that = this;
-      fileInput.addEventListener('change', function() {
-          if (fileInput.files.length > 0) {
-              var file = fileInput.files[0];
-              var reader = new FileReader();
-              reader.onload = function(e) {
-                  var fileContent = e.target.result;
-                  if (fileContent.length > 5000){
-                    that.slbg = fileContent.slice(0, 4000);
-                  }else{
-                    that.slbg = fileContent;
-                  }
-                  
-              };
-              reader.readAsText(file);
-              
-          }
-          document.body.removeChild(fileInput);
-      });
     },
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -617,12 +699,7 @@ export default {
         "number":this.cygs
       }
       
-      if (this.slbg == ""){
-        alert("请输入测试数据");
-        return;
-      }else{
-        this.percentage = 10
-      }
+      this.percentage = 10
       
       var interval = this.simulateProgress()
       this.$http.post("/metrics",data).then((res)=>{

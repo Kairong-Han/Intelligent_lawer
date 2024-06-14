@@ -244,9 +244,10 @@
       width="70%"
       :before-close="handleClose_yuqi1">
       <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
-      <div class="yuqi_left" style="width: 45%;height:90%;overflow: auto;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
         <p>模型输出结果</p>
-        <el-collapse v-model="activeNames" >
+        <div style="height:100%;overflow: auto;">
+        <el-collapse v-model="activeNames">
         <el-collapse-item v-for="(item, index) in events" :key="index" :title="item.title" :name="item.name">
         <div v-for="(item2, index2) in item.content" :key="index2" class="event_item2">
           <div v-if="item2.source == '起诉书'" style="background-color: #f00e0a24;">
@@ -269,10 +270,11 @@
         </el-collapse-item>
       </el-collapse>
       </div>
+      </div>
       
-      <div class="yuqi_right" style="width: 45%;height:90%;overflow: auto;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
         <p>模型预期结果</p>
-        
+        <div style="height:100%;overflow: auto;">
         <el-collapse v-model="activeNames" >
         <el-collapse-item v-for="(item, index) in gt.sjwj" :key="index" :title="item.title" :name="item.name">
         <div v-for="(item2, index2) in item.content" :key="index2" class="event_item2">
@@ -296,6 +298,7 @@
         </el-collapse-item>
       </el-collapse>
       </div>
+      </div>
       <div style="width:auto;padding-left:10px;padding-right:10px;display: flex;flex-direction: column;"> 
         <!-- <p>指标</p>
         <p>F1 : {{sjwj_f1}}</p>
@@ -311,8 +314,9 @@
       width="70%"
       :before-close="handleClose_yuqi2">
       <div class="yuqi" style="width: 100%;height:500px; display: flex;flex-direction: row;padding-top: 10px;align-items: space-between;">
-      <div class="yuqi_left" style="width: 45%;height:90%;overflow: auto;">
+      <div class="yuqi_left" style="width: 45%;height:90%;">
         <p>模型输出结果</p>
+        <div style="height:100%;overflow: auto;">
         <el-collapse v-model="activeNames3"  >
         <el-collapse-item v-for="(item, index) in events3" :key="index" :title="item.title" >
         <div v-for="(item2, index2) in item.content" :key="index2" >
@@ -336,10 +340,11 @@
         </el-collapse-item>
       </el-collapse>
       </div>
+      </div>
       
-      <div class="yuqi_right" style="width: 45%;height:90%;overflow: auto;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
+      <div class="yuqi_right" style="width: 45%;height:90%;border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
         <p>模型预期结果</p>
-        
+        <div style="height:100%; overflow: auto;">
         <el-collapse v-model="activeNames" >
         <el-collapse-item v-for="(item, index) in gt.sscg" :key="index" :title="item.title" :name="item.name">
         <div v-for="(item2, index2) in item.content" :key="index2" class="event_item2">
@@ -362,6 +367,7 @@
         </div>
         </el-collapse-item>
       </el-collapse>
+      </div>
       </div>
       <div style="width:auto;padding-left:10px;padding-right:10px;display: flex;flex-direction: column;"> 
         <!-- <p>指标</p>
@@ -394,7 +400,7 @@ export default {
       sjwj_recall:"待计算",
       gt:{},
       dialogVisible_yuqi1 :false,
-      dialogVisible_yuqi2 : false,
+      dialogVisible_yuqi2 :false,
       temp : [],
       dialogVisible:false,
       fullscreenLoading: false,
@@ -1206,6 +1212,7 @@ export default {
         }
       }
       this.fullscreenLoading3 = false;
+      console.log(this.events3)
       
       alert("事件融合成功")
     },
