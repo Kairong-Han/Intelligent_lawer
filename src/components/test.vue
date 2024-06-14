@@ -22,7 +22,8 @@
       <div class="col_head"><p style="color: #000000 ; font-size: 16px;">测试环境数据</p></div>
 
       <div class="row" style="margin-top: 2rem; margin-bottom: 1rem">
-        <el-button type="primary" round @click="click_jsonl">全量测试</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_folder">抽样测试</el-button>
+        <!-- <el-button type="primary" round @click="click_jsonl">全量测试</el-button> -->
+        <!-- <el-button type="primary" style="margin-left: 2rem" round @click="click_folder">抽样测试</el-button> -->
       </div>
 
         <div style="display:flex;flex-direction: row;margin-top: 5px;width: 90%;height:10%;justify-content: flex-start;align-items: center;">
@@ -92,8 +93,13 @@
         <el-button type="primary" round @click="click_cause">分案由统计</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_sample">分样本统计</el-button>
       </div>
 
+      <div class="zonglunshupingjun">
+      <div style="text-align: left;padding-left: 10px;padding-top: 10px;"><p>全部查询轮次平均结果</p></div>
+        <div>F1-score:{{ avg_f1 }}</div>
+        <div>precision:{{avg_precision}}</div>
+        <div>recall:{{avg_recall}}</div>
+      </div>
       <div class="col7_1">
-
         <div class="col7_1_1">
 
           <div class="col7_1_1_1">
@@ -101,10 +107,11 @@
           </div>
           <div class="col7_1_1_2">
             <div class="col7_1_1_2_1">
-              <p>测试结果：</p>
+              <p>测试结果:</p>
               <p style="margin-top:10px">F1-score : {{sjwj_F1}}</p>
               <p style="margin-top:10px">Precision : {{ sjwj_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ sjwj_recall }}</p>
+              <p>注:课题最终评测关心F1指标</p>
             </div>
             <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
               <el-table
@@ -170,6 +177,7 @@
         </div>
         <div class="col7_1_1">
         <div id="tb1" style="width: 95%;height: 400px;" > </div>
+        <p>由于空间和效率限制，最多只显示前10个样本，如果需要请看分样本统计</p>
         </div>
         <div class="col7_1_1">
           <div class="col7_1_1_1">
@@ -181,6 +189,8 @@
               <p style="margin-top:10px">F1-score : {{ctjc_F1}}</p>
               <p style="margin-top:10px">Precision : {{ ctjc_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ ctjc_recall }}</p>
+              <p>注:课题最终评测关心F1指标</p>
+
             </div>
             <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
               <el-table
@@ -244,6 +254,8 @@
         </div>
         <div class="col7_1_1">
         <div id="tb2" style="width: 95%;height: 400px;" > </div>
+        <p>由于空间和效率限制，最多只显示前10个样本，如果需要请看分样本统计</p>
+
         </div>
         <div id="ec1" style="width: 100%;height: 400px;" > </div>
         <div id="ec2" style="width: 100%;height: 400px;" > </div>
@@ -385,8 +397,11 @@ export default {
   ]),
   data() {
     return {
+      avg_f1:"",
+      avg_precision:"",
+      avg_recall:"",
       ids: [],
-      activeFormat: "folder",
+      activeFormat: "jsonl",
       activeMetric: "sample",
       sample_range: [0, 0],
       sample_range_limit: [0, 0],
@@ -477,6 +492,7 @@ export default {
     };
   },
   mounted() {
+    // this.setDocumentTitle('新的标题');
     this.$nextTick(() => {
       const uploader = this.$refs.uploader.uploader
       var that = this
@@ -1290,7 +1306,7 @@ tooltip: {
   width: 90%;
   height:70%;
   margin-left: 5%;
-  margin-top: 5%;
+  margin-top: 2%;
 
   
   border: solid;
@@ -1421,7 +1437,17 @@ font-family: Arial, Helvetica, sans-serif;height:30px;
   background-color: #ffffff;
   border-bottom: solid 1px #e3e0e0;
 }
-
+.zonglunshupingjun{
+  height: 100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  background-color: #ffffff;
+  border-top: solid 1px #e3e0e0;
+  border-bottom: solid 1px #e3e0e0;
+}
 .col7_1_1_1{
   height: 20%;
   width: 100%;
