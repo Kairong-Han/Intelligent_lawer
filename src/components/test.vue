@@ -77,6 +77,22 @@
         <el-button type="primary" @click="Search" style="width: 20%;margin-left: 10px;" size="small">查询</el-button>
         <!-- <div @click="click_icon"><i class="el-icon-folder-add" ></i></div> -->
       </div>
+
+      <div class="col_head" style="padding-top: 10px"><p style="color: #000000; font-size: 16px;">全部查询轮次平均结果</p></div>
+      <el-row :gutter="150">
+        <el-col :span="12">
+          <div style="padding-top: 10px;"><p>事件挖掘结果</p></div>
+          <div style="padding-top: 10px">F1-score: {{tjjg_average.event.f1}}</div>
+          <div style="padding-top: 5px">precision: {{tjjg_average.event.precision}}</div>
+          <div style="padding-top: 5px">recall: {{tjjg_average.event.recall}}</div>
+        </el-col>
+        <el-col :span="12">
+          <div style="padding-top: 10px;"><p>事件重构结果</p></div>
+          <div style="padding-top: 10px">F1-score: {{tjjg_average.refactor.f1}}</div>
+          <div style="padding-top: 5px">precision: {{tjjg_average.refactor.precision}}</div>
+          <div style="padding-top: 5px">recall: {{tjjg_average.refactor.recall}}</div>
+        </el-col>
+      </el-row>
     </div>
    
     <div class="col7">
@@ -92,13 +108,6 @@
       <div class="row" style="margin-top: 1rem; margin-bottom: 0.5rem">
         <el-button type="primary" round @click="click_cause">分案由统计</el-button><el-button type="primary" style="margin-left: 2rem" round @click="click_sample">分样本统计</el-button>
       </div>
-
-      <div class="zonglunshupingjun">
-      <div style="text-align: left;padding-left: 10px;padding-top: 10px;"><p>全部查询轮次平均结果</p></div>
-        <div>F1-score:{{ avg_f1 }}</div>
-        <div>precision:{{avg_precision}}</div>
-        <div>recall:{{avg_recall}}</div>
-      </div>
       <div class="col7_1">
         <div class="col7_1_1">
 
@@ -111,7 +120,7 @@
               <p style="margin-top:10px">F1-score : {{sjwj_F1}}</p>
               <p style="margin-top:10px">Precision : {{ sjwj_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ sjwj_recall }}</p>
-              <p>注:课题最终评测关心F1指标</p>
+              <p style="margin-top:10px">注:课题最终评测关心F1指标</p>
             </div>
             <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
               <el-table
@@ -189,7 +198,7 @@
               <p style="margin-top:10px">F1-score : {{ctjc_F1}}</p>
               <p style="margin-top:10px">Precision : {{ ctjc_Precision }}</p>
               <p style="margin-top:10px">Recall : {{ ctjc_recall }}</p>
-              <p>注:课题最终评测关心F1指标</p>
+              <p style="margin-top:10px">注:课题最终评测关心F1指标</p>
 
             </div>
             <div class="col7_1_1_2_2" v-show="activeMetric == 'cause'">
@@ -397,9 +406,7 @@ export default {
   ]),
   data() {
     return {
-      avg_f1:"",
-      avg_precision:"",
-      avg_recall:"",
+      tjjg_average: {"event": {"precision": "", "recall": "", "f1": ""}, "refactor": {"precision": "", "recall": "", "f1": ""}},
       ids: [],
       activeFormat: "jsonl",
       activeMetric: "sample",
@@ -725,7 +732,8 @@ export default {
           clearInterval(interval);
           this.percentage = 0;
         }else{
-          this.tjjg = res.data.resData;
+          this.tjjg = res.data.resData.content;
+          this.tjjg_average = res.data.resData.average;
           clearInterval(interval);
           this.percentage = 100;
         }
@@ -1445,7 +1453,7 @@ font-family: Arial, Helvetica, sans-serif;height:30px;
   /* justify-content: space-between; */
   /* align-items: center; */
   background-color: #ffffff;
-  border-top: solid 1px #e3e0e0;
+  border-top: solid 1px black;
   border-bottom: solid 1px #e3e0e0;
 }
 .col7_1_1_1{
