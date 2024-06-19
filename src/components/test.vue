@@ -185,7 +185,7 @@
         
         </div>
         <div class="col7_1_1">
-        <div id="tb1" style="width: 95%;height: 400px;" > </div>
+        <div id="tb1" style="width: 95%;height: 400px; min-height:250px" > </div>
         <p>由于空间和效率限制，最多只显示前10个样本，如果需要请看分样本统计</p>
         </div>
         <div class="col7_1_1">
@@ -262,7 +262,7 @@
           </div>
         </div>
         <div class="col7_1_1">
-        <div id="tb2" style="width: 95%;height: 400px;" > </div>
+        <div id="tb2" style="width: 95%;height: 400px;min-height:250px" > </div>
         <p>由于空间和效率限制，最多只显示前10个样本，如果需要请看分样本统计</p>
 
         </div>
